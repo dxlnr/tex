@@ -1,0 +1,1185 @@
+\documentclass[a4paper,10pt,twoside=true,DIV=10,headsepline,plainheadsepline]{scrartcl}
+\usepackage{scrpage2}
+\usepackage{pdfpages}
+
+\usepackage[a4paper, left=2cm, right=2cm, top=2cm, bottom=2cm]{geometry}
+
+ % german Stuff
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{enumitem}
+ 
+% bring in some color
+\usepackage{color}
+
+% Create graphs & plots
+\usepackage{pgfplots}
+ 
+%\renewcommand{\raggedsection}{\centering}
+\usepackage{sectsty}
+\usepackage{lipsum}
+\sectionfont{\centering}
+\subsectionfont{\centering}
+\usepackage{amsmath}
+\usepackage{cases}
+
+\DeclareMathOperator*{\argmax}{arg\,max} 
+\DeclareMathOperator*{\argmin}{arg\,min} 
+\DeclareMathOperator*{\betta}{Beta} 
+
+\begin{document}
+	\section{Mathematical Refresher}
+
+		Since $ \sum $ is symmetric and positive semi-definite we can use the \textbf{Cholesky 			decomposition}
+			\begin{equation} 
+				\mathbf{\Sigma} = LL^T 
+			\end{equation}
+		to obtain 
+			\begin{equation} 
+				\mathbf{\Sigma}^{-1} = L^{-T}L^{-1}.
+			\end{equation}
+
+		 \subsection{Probability Theory}
+		
+		Bayes' Rule:
+			\begin{align}
+				P(Y|X) &= \frac{P(X|Y) \cdot P(Y)}{P(X)} \\
+				&= \frac{P(X|Y) \cdot P(Y)}{\sum_{i} P(X|Y=y_i) \cdot P(Y = y_i)}
+			\end{align}
+
+		
+		\begin{equation}
+			p(a) = \int\int p(a,b,c) \mathrm{d}b \mathrm{d}c
+		\end{equation}
+	
+		\begin{equation}
+			p(c\mid a,b) = \frac{p(a,b,c)}{p(a,b)} = \frac{p(a,b,c)}{\int p(a,b,c) \mathrm{d}c}
+		\end{equation}
+
+		\begin{equation}
+			p(b\mid c) = \frac{p(b,c)}{p(c)} = \frac{\int p(a,b,c)\mathrm{d}a}{\int\int p(a,b,c) \mathrm{d}a \mathrm{d}b}
+		\end{equation}
+
+		Chain rule for probability:
+			\begin{equation}
+				p(A,B | C) = p(A | B,C) \times p(B | C)
+			\end{equation}
+
+		Productrule:
+			\begin{equation}
+				p(x,y) = p(y | x) \times p(x)
+			\end{equation}
+
+
+		\subsection{Probability Distributions}
+			\subsubsection{Multivariate Gaussian Distribution}
+
+				Probability density function: 
+					\begin{equation}
+						p(\mathbf{x} | \mathbf{\mu}, \mathbf{\Sigma}) = \frac{1}{(2\pi)^{d/2} | \mathbf{\Sigma} |^{1/2}} \textrm{exp}\bigg(- \frac{1}{2} (\mathbf{x} - \mathbf{\mu})^T \mathbf{\Sigma}^{-1} (\mathbf{x} - \mathbf{\mu}) \bigg)
+					\end{equation}
+
+				** Aditional mathematical operations:
+					\begin{align}
+						\frac{1}{2} (\mathbf{x} - \mathbf{\mu})^T \mathbf{\Sigma}^{-1} (\mathbf{x} - \mathbf{\mu}) &= \\
+						 &= \frac{1}{2} \mathbf{x}^T \mathbf{\Sigma}^{-1} \mathbf{x} -  \mathbf{x}^T \mathbf{\Sigma}^{-1} \mathbf{\mu} + \frac{1}{2} \mathbf{\mu}^T \mathbf{\Sigma}^{-1} \mathbf{\mu}
+					\end{align}
+
+			
+			** Isotropic Gaussian: same variance in all directions.
+					
+				
+		\subsection{Important Functions \& Derivatives}
+		\subsubsection{Sigmoid function $\sigma(x)$}
+			\begin{equation}
+				\sigma(x) = \frac{1}{1+e^{-x}} = \frac{e^{x}}{1+e^{x}}
+			\end{equation}
+			\begin{equation}
+				\frac{\partial \sigma(x)}{\partial x} = \sigma(x)(1 - \sigma(x))
+			\end{equation}
+			
+			\begin{equation}
+				\nabla_w (- \textrm{ln }\sigma(w^T x)) = -x \cdot \frac{\sigma(w^T x)(1 - \sigma(w^T x))}{\sigma(w^T x)}
+			\end{equation}
+			
+
+	\section{Decision Trees}
+		\subsubsection{Impurity Measures}
+			With $\pi_c = p(y = c | t)$:
+			\begin{itemize}
+ 				\item Misclassification rate:
+				\begin{equation}
+					i_E (t) = 1 - \textrm{max}_c \textrm{ }\pi_c
+				\end{equation}
+				\item Entropy:
+				\begin{equation}
+					i_H (t) = - \sum_{c_i \in C} \pi_{c_i} \textrm{log } \pi_{c_i}
+				\end{equation}
+				\item Gini index:
+				\begin{equation}
+					i_G (t) = \sum_{c_i \in C} \pi_{c_i} (1 - \pi_{c_i}) = 1 - \sum_{c_i \in C} \pi_{c_i}^2
+				\end{equation}
+			\end{itemize}
+
+		Perform \textcolor{blue}{splitting} by calculating the improvement when performing a split $s$ of $t$ into $t_R$ and $t_L$ 
+
+
+for $i(t) = i_E (t)$ is given by:
+		\begin{equation}
+			\Delta i (s,t) = i(t) - p_L \cdot i(t_L) - p_R \cdot i(t_R)
+		\end{equation}
+
+		\subsubsection{Properties of Decision Trees}
+		Assume $N$ samples and $k$ features ($k \leq N$)
+		\begin{itemize}
+ 			\item features are binary: max depth $d$: $k$ \& max number of leave nodes: $\text{min } (2^k, N)$
+			\item features are continous: max depth $d$: $N$ \& max number of leave nodes: $N$
+		\end{itemize}
+			
+	\section{kNN}
+	\subsection{k-Nearest Neighbor classification}
+	Look at multiple nearest neighbors and pick the majority label. 
+
+Let $N_k (x)$ be the \textcolor{blue}{$k$} nearest neighbors of a vector $\mathbf{x}$, then in classification tasks:
+		\begin{equation}
+			p(y = c | \mathbf{x},k) = \frac{1}{k} \sum_{i \in N_k(x)} \Pi (y_i = c)
+		\end{equation}
+		\begin{equation}
+			\hat{y} = \textrm{argmax}_c \textrm{ } p(y = c | \mathbf{x},k) 
+		\end{equation}
+
+	with the \textcolor{blue}{indicator variable $\Pi (e)$} is defined as:
+		\begin{equation}
+			\Pi (e) =
+  			\begin{cases}
+    				1  & \quad \text{if } e \text{ is true}\\
+    				0  & \quad \text{if } e \text{ is false}
+ 			\end{cases}
+		\end{equation}
+
+	\subsection{k-Nearest Neighbor classification: weighted}
+	Look at multiple nearest neighbors and pick the \textcolor{blue}{weighted majority} label. The weight is \textcolor{blue}{inversely proportional} to the distance. Let $N_k (x)$ be the $k$ nearest neighbors of a vector $\mathbf{x}$, then in classification tasks:
+		\begin{equation}
+			p(y = c | \mathbf{x},k) = \frac{1}{Z} \sum_{i \in N_k(x)} \frac{1}{d(x, x_i)} \Pi (y_i = c)
+		\end{equation}
+		\begin{equation}
+			\hat{y} = \textrm{argmax}_c \textrm{ } p(y = c | \mathbf{x},k) 
+		\end{equation}
+
+	with $Z = \sum_{i \in N_k(x)} \frac{1}{d(x, x_i)}$ the normalization constant and $d(x,x_i)$ being a distance measure between $x$ and $x_i$. 
+
+	\subsection{Distance measures \& Scaling Issues}
+		\begin{itemize}
+ 					\item $L_1$ norm: $\sum_i | u_i - v_i |$
+					\item $L_2$ norm: $\sqrt{\sum_i (u_i - v_i)^2} = \| \mathbf{u} - \mathbf{v} \|_2$
+					\item $L_{\infty}$ norm: $\textrm{max}_i \textrm{ } | u_i - v_i |$					
+					\item \textcolor{blue}{Data standardization} $\rightarrow$ Scale each feature to zero mean and unit variance.
+					\begin{equation}
+						x_{i, \textrm{std}} = \frac{x_i - \mu_i}{\sigma_i}
+					\end{equation}
+		Standard deviation is defined as:
+					\begin{equation}
+						\sigma = \sqrt{\frac{1}{N} \sum_i^N (x_i - \mu)^2}
+					\end{equation}
+					
+		\end{itemize}
+	
+
+	\section{Probabilistic Inference}
+	\subsection{Maximum likelihood estimation: MLE}
+	Maximize the likelihood of our observation. (Maximum Likelihood). Under our model assumptions (i.i.d.): $p( \mathcal{D}| \theta)$:
+		\begin{equation}
+			\theta_{MLE} = \textrm{argmax}_{\theta \in [0,1]} \textrm{ } p( \mathcal{D}| \theta)
+		\end{equation}
+
+	\subsection{Maximum a posteriori estimation: MAP}
+	\subsubsection{Bayes' Theorem}
+	The Bayes formula tells us how to we update our beliefs about $\theta$ after observing the data D
+		\begin{equation}
+			p( \theta | \mathcal{D}) = \frac{p(\mathcal{D}|\theta) \cdot p(\theta)}{p(\mathcal{D})}
+		\end{equation}
+
+		\begin{itemize}
+ 			\item $p( \theta | \mathcal{D})$ is the \textcolor{blue}{posterior} distribution: It encodes our beliefs in the value of $\theta$ after observing data. 
+			\item $p(\mathcal{D}|\theta)$ is the \textcolor{blue}{likelihood}.
+			\item $p(\theta)$ is the \textcolor{blue}{prior} that encodes our beliefs before observing the data.
+			\item $p(\mathcal{D})$ is the \textcolor{blue}{evidence}. It acts as a normalizing constant that ensures that the posterior distribution integrates to 1. 
+				\begin{itemize}
+ 					\item Marginalization: 
+					\begin{equation}
+						p(\mathcal{D}) = \int p(\mathcal{D}, \theta) d\theta = \int p(\mathcal{D} | \theta) p(\theta) d\theta 
+					\end{equation}
+				\end{itemize}
+		\end{itemize}
+
+		\begin{equation}
+			\textcolor{red}{\textrm{posterior} \propto \textrm{likelihood} \cdot \textrm{prior}}
+		\end{equation}
+	
+
+	\textcolor{blue}{Maximum a posterior estimation}:
+		\begin{equation}
+			\theta_{MAP} = \textrm{argmax}_{\theta} \textrm{ } p( \theta | \mathcal{D} ) = \textrm{argmax}_{\theta} \textrm{ } p( \mathcal{D} | \theta ) \cdot p(\theta)
+		\end{equation}
+
+	\subsection{Estimating the posterior distribution}
+		Finding the \textcolor{blue}{true posterior} $p(\theta | \mathcal{D})$ boils down to finding the normalization constant, such that the distribution integrates to 1. $\rightarrow$ \textcolor{blue}{Pattern Matching}
+		\newline
+
+		This leads to a general principle $\rightarrow$ \textcolor{blue}{conjugate prior}
+		\newline
+	
+		** For the Gaussian distribution, we compare:
+		\begin{align}
+			&\propto \mathcal{N} (\mathbf{x} | \mu, \Sigma) \\
+			&\propto \textrm{exp } \Big(-\frac{1}{2} (\mathbf{x}^T \Sigma^{-1} \mathbf{x} - \mathbf{x}^T \Sigma^{-1} \mu)\Big)
+		\end{align}
+
+		in order to find $\mu$ and $\Sigma$ for the posterior distribution.
+		
+
+	\subsection{** Aditional information}
+		\textbf{Precision} is defined as:
+			\begin{equation}
+				\textrm{precision} = \beta = \frac{1}{\textrm{variance}} = \frac{1}{\textrm{std\_dev}^2} = \frac{1}{\sigma^2}
+			\end{equation}
+			
+	\section{Linear Regression}
+		Definitions of $X \in \mathbb{R}^{N \times D} $, $x \in \mathbb{R}^{D} $, $w \in \mathbb{R}^{D} $, $y \in \mathbb{R}^{N} $
+	
+	\subsection{Basic Linear Regression}
+	
+		Predictions of a linear regression model are generated as 
+			\begin{equation}
+				\hat{y} = w^T x + w_0
+			\end{equation} 
+
+		and by absorbing the bias term as $\hat{y} = w^T x$.
+		\newline
+
+		Loss function (\textcolor{blue}{least squares}):
+			\begin{equation}
+				E_{LS}(\mathbf{w}) = \frac{1}{2} \sum^N (w^T x_i - y_i)^2
+			\end{equation}
+
+		\subsubsection{Finding the optimal weight vector $w$}
+			\begin{align}
+				\mathbf{w}^* &= \textrm{argmin}_w \textrm{ } E_{LS}(\mathbf{w}) \\
+				\nabla_w E_{LS} &= \nabla_w \frac{1}{2} (\mathbf{X}\mathbf{w} - \mathbf{y})^T (\mathbf{X}\mathbf{w} - \mathbf{y}) \\
+				&= \nabla_w \frac{1}{2} (\mathbf{w}^T \mathbf{X}^T \mathbf{X} \mathbf{w}  - 2 \mathbf{w}^T\mathbf{X}^T\mathbf{y} + \mathbf{y}^T \mathbf{y}) \\
+				&= \mathbf{X}^T \mathbf{X} \mathbf{w} - \mathbf{X}^T\mathbf{y}
+			\end{align}
+
+			\begin{equation}
+				\mathbf{w}^* = \underbrace{(\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X}^T}_{\mathbf{X}^{\dagger}} \mathbf{y}
+			\end{equation}
+
+		$\mathbf{X}^{\dagger}$ is called \textcolor{blue}{Moore-Penrose pseudo-inverse} of $\mathbf{X}$.
+		\subsubsection{Controlling overfitting with regularization}
+			Least squares loss function with L2 regularization $\rightarrow$ \textcolor{blue}{Ridge Regression}
+			\begin{equation}
+				E_{ridge} (\mathbf{w}) = \frac{1}{2} \sum^N \Big(\mathbf{w}^T \mathbf{\phi}(\mathbf{x}_i) - y_i \Big)^2 + \frac{\lambda}{2} \| \mathbf{w} \|^2_2
+			\end{equation}
+
+			\begin{equation}
+				\mathbf{w}^* = (\mathbf{\phi}^T \mathbf{\phi} + \lambda \mathbf{I})^{-1} \mathbf{\phi}^T \mathbf{y}
+			\end{equation}
+
+		\subsection{Probabilistic Linear Regression}
+		
+		Assumption:
+			\begin{equation}
+				y_i = \mathbf{w}^T x_i + \underbrace{\epsilon_i}_{noise}
+			\end{equation}
+
+		Noise has zero-mean Gaussian distribution with a fixed precision $\beta = \frac{1}{\sigma^2}$ and iid.
+		\begin{equation}
+			\epsilon_i \sim \mathcal{N}(0, \beta^{-1})
+		\end{equation}
+
+		\begin{equation}
+			p(\mathbf{y} | \mathbf{X}, \mathbf{w}, \beta) = \prod^N p(y_i | \mathbf{w}^T x_i, \beta)
+		\end{equation}
+
+		That leads to:
+		\begin{equation}
+			\mathbf{w}_{ML} = \textrm{arg min}_{w} \textrm{ } \frac{1}{2} \sum^N (\mathbf{w}^T x_i - y_i)^2
+		\end{equation}
+		\newline
+
+Under the previous probabilistic assumptions on the data, least-squares regression corresponds to finding the \textcolor{blue}{maximum likelihood estimate} of $\mathbf{w}$. This is thus one set of assumptions under which least-squares regression can be justified as a very natural method that’s just doing maximum likelihood estimation (MLE).
+
+	\section{Linear Classification}
+		\subsection{Probabilistic Generative Models}
+		
+		The idea is to obtain the class posterior using the Bayes formula:
+			\begin{equation}
+				p ( y = c | \mathbf{x} ) \propto \underbrace{p ( \mathbf{x} | y = c)}_{\textrm{class conditional}} \cdot \underbrace{p(y = c)}_{\textrm{class prior}}
+			\end{equation}
+
+		The model consists of
+			\begin{itemize}
+ 				\item \textcolor{blue}{class prior} - a priori probability of a point belonging to a class $c$
+				\item \textcolor{blue}{class conditional} - probability of generating a point $ \mathbf{x}$, given that it belongs to class $c$
+			\end{itemize}
+		
+		\subsubsection{Class prior}
+		Choosing class prior $\rightarrow$ The label $y$ can take one of $C$ discrete values. $\rightarrow$ Use categorical distribution!
+			\begin{equation}
+				p (y = c) = \theta_c \textrm{   or equivalently   } p(y) = \prod^C_{c=1} \theta_c^{\Pi (y = c)}
+			\end{equation}
+
+		\subsubsection{Class conditionals}
+		Choosing class conditionals $\rightarrow$ The feature vector $x \in \mathbb{R}^D$ is continuous. $\rightarrow$ Use a multivariate normal distribution for each class!
+
+		\subsubsection{Posterior distribution}
+		For simplicity that we have two classes $C = {0, 1}$ $\rightarrow$ \textcolor{blue}{Binary Case}
+		\begin{align}
+			p(y=1|\mathbf{x}) &= \frac{p ( \mathbf{x} | y = 1)p(y=1)}{p ( \mathbf{x} | y = 1)p(y=1) + p ( \mathbf{x} | y = 0)p(y=0)} \\
+			&= \frac{1}{1 + \textrm{exp}(-a)}
+		\end{align}
+
+		where we defined
+		\begin{equation}
+			a = \textrm{ln } \Bigg( \frac{p ( \mathbf{x} | y = 1)p(y=1)}{p ( \mathbf{x} | y = 0)p(y=0)} \Bigg)
+		\end{equation}
+
+		with \textcolor{blue}{a} is the \textcolor{blue}{decision boundary}.
+
+			\subsubsection{Multi-Class Classification}
+				The \textcolor{blue}{likelihood} function of the parameters $ \{\pi_c, \theta_c \}_{c=1}^C $ is given by
+				\begin{equation}
+					p(\mathcal{D} | \{\pi_c, \theta_c \}_{c=1}^C ) = \prod_{n=1}^N  \prod_{c=1}^C (p(x^{(n)} | \theta_c ) \pi_c )^{y_c^{(n)}}
+				\end{equation}
+
+				Constraint for prior class probability:
+					\begin{equation}
+						\sum_c \pi_c = 1
+					\end{equation} 
+
+				Important:
+					\begin{equation}
+						\sum^N y_{c}^{(n)} = N_c
+					\end{equation} 
+
+		\subsection{Probabilistic Discriminative Models}
+			Model the posterior distribution $p(y | x)$ directly and let $w, w_0$ be free parameters. $\rightarrow$ \textcolor{blue}{Logistic regression}
+
+
+		\subsubsection{Likelihood of logistic regression}
+			Learning logistic regression comes down to finding a “good” setting of parameters $w$ that ”explain” the training set $\mathcal{D} = \{(x_i , y_i)\}^N_{i=1}$.
+			\newline
+
+			Assuming that all samples $(x_i , y_i )$ are drawn i.i.d., we can write the
+likelihood as
+			\begin{align}
+				p(y | w,X) &= \prod^N p(y_i | x_i, w) \\
+				&= \prod^N \sigma (w^T x_i)^{y_i} (1 - \sigma (w^T x_i))^{1 - y_i}
+			\end{align}
+
+		This results in the error function, called \textcolor{blue}{negative log-likelihood}
+			\begin{align}
+				E(w) = - \textrm{ln } p(y | w,X) &= - \sum^N \big( y_i \textrm{ ln } \sigma (w^T x_i + b) + (1 - y_i) \textrm{ ln } (1 - \sigma (w^T x_i + b)) \big)\\
+				    &= \sum^N \textrm{ln } \big(1 + e^{- y_i (w^T x_i + b)}\big)
+			\end{align}
+
+		There does not exist a \textcolor{blue}{closed form solution} for logistic regression (we cannot compute the optimal $w^*$ using standard mathematical operations). $\rightarrow$ \textcolor{blue}{Opimization}
+
+		\subsubsection{Logistic regression + weights regularization: MAP}
+			\begin{equation}
+				E(w) = - \textrm{ln } p(y | w,X) + \lambda \| w \|^2_q
+			\end{equation}
+
+		For $q = 2$ this corresponds to MAP estimation with a Gaussian prior on $w$.
+
+		
+
+	\section{Optimization}
+		
+		\subsection{Verifying convexity}
+		Convexity: \textcolor{blue}{Sets}
+			\begin{itemize}
+ 				\item $\mathcal{X}$ is a convex set if for all $x, y \in \mathcal{X}$ it follows that $\lambda x + (1 − \lambda)y \in \mathcal{X}$ for $\lambda \in [0,1]$ 
+
+	$\rightarrow$ $x_{\lambda} = \lambda x_1 + (1 − \lambda)x_2  \in \mathcal{X}$ must hold.
+				\item You might consider splitting the sets into smaller subsets and proof the \textcolor{blue}{intersection} of several sets:
+
+				** Example
+				\begin{align}
+					\mathcal{X} &= \big \{ x \in \mathbb{R}^D : \| \mathbf{x} \|_2 \leq 1 , x_i \geq 0 \textrm{ for all } i = 1, ... , D \big \} \\
+					&= \underbrace{\big \{ x \in \mathbb{R}^D : \| \mathbf{x} \|_2 \leq 1 \big\}}_{\textrm{unit ball}}  \cap \underbrace{\big \{ x \in \mathbb{R}^D : x_i \leq 0 \leq 1 \textrm{ for all } i = 1, ... , D \big \}}_{\textrm{cube } [0,1]^D}
+				\end{align}
+
+				$\rightarrow$ Therefore, $\mathcal{X}$ is an intersection of two convex sets and hence convex.
+				\item $\rightarrow$ if Set is convex: Focus on the \textcolor{red}{vertices} to find the optimum!
+			\end{itemize}
+
+
+		\subsubsection{Prove whether the definition of convexity holds (1)}
+		$f(x)$ is a convex \textcolor{blue}{function} on a convex set $\mathcal{X}$ if
+		for all $x, y \in X$ and $\lambda \in [0,1]$:
+		\begin{equation} 
+			\lambda f(x) + (1 − \lambda) f(y) \ge f(\lambda x + (1 − \lambda) y)	
+		\end{equation}
+		\newline
+
+		You might consider proof via \textcolor{red}{counterexample}! 
+
+		\subsubsection{Exploit special Results $\rightarrow$ First-Order Convexity (2)}
+		Suppose $f: \mathcal{X} \rightarrow \mathbb{R}$ is a differentiable function and $\mathcal{X}$ is convex. Then $f$ is convex if for $x,y \in \mathcal{X}$
+			\begin{equation} 
+				f(\mathbf{y}) \geq f(\mathbf{x}) + (\mathbf{y} - \mathbf{x})^T \nabla f(\mathbf{x})
+			\end{equation}
+			\newline
+
+		Taylor expansion series included the Hessian matrix $\mathbf{H}$:
+			\begin{align} 
+				f(\mathbf{y}) &= f(\mathbf{x}) + (\mathbf{y} - \mathbf{x})^T \nabla f(\mathbf{x}) + \frac{1}{2} (\mathbf{y} - \mathbf{x})^T \nabla^2 f(\mathbf{x_{\lambda}}) (\mathbf{y} - \mathbf{x}) \\
+			&= f(\mathbf{x}) + (\mathbf{y} - \mathbf{x})^T \nabla f(\mathbf{x}) + \frac{1}{2} (\mathbf{y} - \mathbf{x})^T \mathbf{H} (\mathbf{y} - \mathbf{x})
+			\end{align}
+			\newline
+
+
+		\subsubsection{Show that the function can be obtained from simple convex functions by operations that preserve convexity (3)}
+
+			Convexity preserving operations:
+			
+			\begin{itemize}
+				\item Let $f_1 : \mathbb{R}^d \rightarrow \mathbb{R}$ and $f_2 : \mathbb{R}^d \rightarrow \mathbb{R}$ be convex functions, and $g : \mathbb{R}^d \rightarrow \mathbb{R}$ be a concave function, then
+				\begin{itemize}
+ 					\item $h(\mathbf{x}) = f_1(\mathbf{x}) + f_2(\mathbf{x})$ is convex
+					\item $h(\mathbf{x}) = \textrm{max}\{f_1(\mathbf{x}), f_2(\mathbf{x})\}$ is convex
+					\item $h(\mathbf{x}) = c \cdot f_1(\mathbf{x})$ is convex if $c \geq 0$
+					\item $h(\mathbf{x}) = c \cdot g(\mathbf{x})$ is convex if $c \leq 0$
+					\item $h(\mathbf{x}) = f_1(\mathbf{A} \mathbf{x} + \mathbf{b})$ is convex
+					\item $h(\mathbf{x}) = m(f_1(\mathbf{x}))$ is convex if $m: \mathbb{R} \rightarrow \mathbb{R}$ is convex and non-decreasing
+				\end{itemize}
+			\end{itemize}
+
+		\subsection{Additional Information}
+
+			\textbf{Jensen's Inequality}: if $X$ is a random variable and $f$ is a convex function, then 
+			\begin{equation}
+				f ( E[X] ) \le E [f(X)]
+			\end{equation}
+			\newline
+
+			\textbf{Non-decreasing}: A function $f(x)$ is said to be \textcolor{blue}{nondecreasing} on an interval $I$ if:
+			\begin{equation}
+				f (x) \geq f(y) \textrm{ } \textrm{for all } x > y 
+			\end{equation}
+			
+
+		
+		\subsection{Gradient Descent}
+		\begin{itemize}
+ 			\item Key idea
+			\begin{itemize}
+ 				\item Gradient points into steepest ascent direction.
+				\item Locally, the gradient is a good approximation of the objective function.
+			\end{itemize}
+			\item Algorithm
+
+			\textbf{given} a starting point $\theta \in \textrm{Dom }(f)$
+
+			\textbf{repeat}
+				\begin{equation} 
+					\theta_{t+1} \leftarrow \theta_{t} - \tau \cdot \nabla f(\theta_{t})
+				\end{equation}
+
+			\textbf{until} stopping criterion is satisfied.
+
+		\end{itemize}
+
+		
+		
+		with $\tau$ as the \textcolor{blue}{learning rate}.
+		
+		
+		
+	\section{Constrained Optimization}
+		\subsection{Projected Gradient Descent}
+
+			Idea: Project new point back on the convex set $\mathcal{X}$
+				\begin{equation} 
+					\theta^{t+1} \leftarrow \pi_{\mathcal{X}} (\theta^t - \tau \nabla f(\theta^t))
+				\end{equation}
+
+			where
+				\begin{equation} 
+					\pi_{\mathcal{X}}(p) = \textrm{argmin}_{\theta \in \mathcal{X}} \| \theta - p \|_2^2
+				\end{equation}
+
+		\subsubsection{Efficient Projections}
+		\begin{itemize}
+ 			\item Projection onto box
+			\begin{equation} 
+				\mathcal{X} = \big\{ \theta \in \mathbb{R}^d : l_i \leq \theta_i \leq u_i \textrm{ for all } i = 1, ... , d \big\}
+			\end{equation}
+			\begin{equation} 
+				(\pi_{\mathcal{X}}(p))_i = \textrm{min}(\textrm{max}(l_i, p_i), u_i)
+			\end{equation}
+			\item Projection onto $L_2$ ball $\mathcal{X} = \big\{ \theta \in \mathbb{R}^d : \| \theta \|_2 \leq c \big\}$
+			\begin{equation} 
+				\pi_{\mathcal{X}}(\mathbf{p}) = 
+				\begin{cases}
+    					- \mathbf{p} & \quad \text{if } \| \mathbf{p} \|_2 \leq c\\
+    					- \frac{c}{\| \mathbf{p} \|_2} \mathbf{p}  & \quad \text{ otherwise} 
+ 				\end{cases}
+			\end{equation}
+		\end{itemize}
+
+		%\begin{center}
+		%\begin{tikzpicture}
+			%\begin{axis}[
+    			%axis lines = left,
+    			%xlabel = $x_1$,
+			%every axis x label/.style={at={(current axis.right of origin)},anchor=west},
+    			%ylabel = {$x_2$},
+			%legend pos=outer north east,
+			%]
+			%\addplot [
+    				%domain=-1:2,
+				%domain y=0:2,
+    				%samples=10, 
+    				%color=red,
+			%]
+			%{x >= 0, y >= 0, ||x||^2 <= 1};
+			%\end{axis}
+		%\end{tikzpicture}
+		%\end{center}
+
+		\subsection{Lagrangian and Duality}
+			\subsubsection{Recipe for solving constrained optimization problems}
+
+			The constrained optimization problem,
+			\begin{align}
+				&\textrm{minimize}_{\mathbf{\theta}} \textrm{ } f_0(\mathbf{\theta}) \\
+				&\textrm{subject to } f_i(\mathbf{\theta}) \leq 0 \textrm{ for } i = 1, ... , M
+			\end{align}
+
+			with all $f_0 , f_1, ... , f_M$ convex can be approached as follows:
+
+			\begin{enumerate}
+				\item Formulate the \textcolor{blue}{Lagrangian} $L(\mathbf{\theta}, \mathbf{\alpha}) = f_0(\mathbf{\theta}) + \sum_{i=1}^M \alpha_i f_i(\mathbf{\theta})$.
+				\item For each $\alpha \geq 0$ obtain the \textcolor{blue}{dual function $g(\alpha)$} by solving
+					\begin{equation} 
+						g(\alpha) = \textrm{min}_{\theta} \textrm{ } L(\mathbf{\theta}, \mathbf{\alpha})
+					\end{equation}
+				\begin{enumerate}
+					\item Figure out for which $\alpha$ the objective is unbounded
+					\item For other compute $g(\alpha)$, e.g. solve $\nabla_{\theta} L(\mathbf{\theta}, \mathbf{\alpha}) = 0$ to get $\theta^* (\alpha)$			, then 	$g(\alpha) = L(\mathbf{\theta}^* (\alpha), \mathbf{\alpha})$	
+				\end{enumerate}
+				\item Solve the \textcolor{blue}{dual problem}, it’s maximum is also the minimum of the
+original problem if \textcolor{blue}{Slater’s condition} is satisfied.
+					\begin{align}
+				&\textrm{maximize}_{\mathbf{\alpha}} \textrm{ } g(\mathbf{\alpha}) \\
+				&\textrm{subject to } \alpha_i(\mathbf{\theta}) \leq 0 \textrm{ for } i = 1, ... , M
+					\end{align}
+			\end{enumerate}
+
+		\subsection{Slater’s theorem \& constraint qualification}
+
+		The \textcolor{blue}{duality gap is zero} (i.e. strong duality holds) if $f_0, f_1, ... , f_M$ are convex and there exists a feasible $\theta \in \mathcal{R}^d$ such that for every constraint $i = 1, ..., M$ it holds, either
+		\begin{itemize}
+			\item the constraint is affine, that is $f_i (\theta) = \mathbf{w}_i^T \theta + b_i$
+			\item the constraint is satisfied with ”$<$”, that is $f_i (\theta) < 0$ i.e. for the non-affine constraints we require a strict inequality
+		\end{itemize}
+			
+				
+	\section{SVM \& Kernels}
+		\subsection{Support Vector Machines (SVM)}
+			Idea: Find a hyperplane that separates both classes with the \textcolor{blue}{maximum margin}. 
+
+		\subsubsection{constrained convex optimization problem}
+			To find the separating hyperplane with the maximum margin we need to
+find $\{w, b\}$ that
+
+			\begin{align}
+				&\textrm{minimize }  f_0(\mathbf{w}, b) = \frac{1}{2} \mathbf{w}^T \mathbf{w} \\
+				&\textrm{subject to } y_i (\mathbf{w}^T \mathbf{x}_i + b) - 1 \geq 0
+			\end{align}
+
+		\subsubsection{Primal Problem \& Dual Problem}
+		Applying the recipe for solving the constrained optimization problem.
+		
+		\begin{enumerate}
+			\item Calculate the Lagrangian
+				\begin{equation} 
+					L(\mathbf{w}, b, \alpha) = \frac{1}{2} \mathbf{w}^T \mathbf{w} - \sum^N \alpha_i [y_i(\mathbf{w}^T \mathbf{x}_i + b) - 1]
+				\end{equation}
+			\item Minimize $L(\mathbf{w}, b, \alpha)$ w.r.t. $w$ and $b$.
+				\begin{equation} 
+					\nabla_w L(\mathbf{w}, b, \alpha) = \mathbf{w} - \sum^N \alpha_i y_i \mathbf{x}_i \overset{!}{=} 0
+				\end{equation}
+				\begin{equation} 
+					\rightarrow \mathbf{w}^*(\alpha) = \sum^N \alpha_i y_i \mathbf{x}_i
+				\end{equation}
+
+				\begin{equation} 
+					\frac{\partial L}{\partial b} = \sum^N \alpha_i y_i \overset{!}{=} 0
+				\end{equation}
+
+			\item Solve the \textcolor{blue}{Dual Problem} by using \textcolor{blue}{Quadratic Programming} ($\rightarrow \alpha^*$).
+				\begin{align}
+				&\textrm{maximize } g(\alpha) = \sum_i^N \alpha_i - \frac{1}{2} \sum_i^N \sum_j^N y_i y_j \alpha_i \alpha_j \mathbf{x}_i^T \mathbf{x}_j \\
+				&\textrm{subject to } \sum^N \alpha_i y_i = 0, \textrm{ } \alpha_i \geq 0
+			\end{align}
+		\end{enumerate}
+
+		\subsubsection{Recovering $w$ and $b$ from the dual solution $\alpha^*$}
+	
+		From the optimality condition, the weights $w$ are a linear combination of the training samples:
+		\begin{equation} 
+			\mathbf{w} = \sum^N \alpha_i^* y_i \mathbf{x}_i
+		\end{equation}
+
+		From the \textcolor{blue}{complementary slackness condition} $\alpha_i^* f_i(w,b) = 0$ we can easily recover the bias.
+		\newline
+
+		In our case this means:
+			\begin{align} 
+				\alpha_i f_i(x^*) &= 0 \\
+				\alpha_i [y_i(\mathbf{w}^T \mathbf{x}_i + b) - 1] &= 0
+			\end{align}
+		
+		Hence a training sample $\mathbf{x}_i$ can only contribute to the weight vector ($ \alpha_i \neq 0$) if it lies \textcolor{blue}{on the margin}, 
+
+that is
+			\begin{equation} 
+				y_i(\mathbf{w}^T \mathbf{x}_i + b) = 1
+			\end{equation}
+		A training sample $\mathbf{x}_i$ with $ \alpha_i \neq 0$ is called a \textcolor{blue}{support vector}.
+
+		\subsubsection{** Example}
+			\begin{align}
+				&\textrm{minimize}_{\mathbf{x}} \textrm{ } \mathbf{c}^T \mathbf{x} \\
+				&\textrm{subject to } \mathbf{A} \mathbf{x} \leq \mathbf{b} 
+			\end{align}
+
+		\begin{enumerate}
+			\item Calculate the Lagrangian
+				\begin{equation} 
+					L(\mathbf{x}, \alpha) = \mathbf{x}^T (\mathbf{A}^T \alpha + \mathbf{c}) - \mathbf{b}^T \alpha
+				\end{equation}
+			
+			The Lagrangian is a linear non-constant function if $\mathbf{A}^T \alpha + \mathbf{c} \neq 0$ and therefore unbounded below with respect to $\mathbf{x}$ and does not depend on $\mathbf{x}$ as well.
+			\item Dual function:
+				\begin{equation} 
+					g (\alpha) = \textrm{min}_x \textrm{ } \mathbf{x}^T (\mathbf{A}^T \alpha + \mathbf{c}) - \mathbf{b}^T \alpha = 
+				\begin{cases}
+    					- \mathbf{b}^T \alpha  & \quad \text{if } \mathbf{A}^T \alpha + \mathbf{c} = 0\\
+    					- \infty  & \quad \text{ otherwise} 
+ 				\end{cases}
+				\end{equation}
+
+			\item Dual problem:
+				\begin{align}
+				&\textrm{maximize}_{\alpha} \textrm{ } - \mathbf{b}^T \alpha \\
+				&\textrm{subject to } \mathbf{A}^T \mathbf{\alpha} + \mathbf{c} = 0, \alpha \geq 0
+			\end{align}
+		
+		\end{enumerate}
+	
+		\subsection{Soft Margin Support Vector Machines}
+		Idea: Relax the constraints as much as necessary but punish the relaxation of a constraint.
+		\newline
+
+		\textcolor{blue}{Slack variable $\xi_i \geq 0$ } is introduced for every training sample $\mathbf{x}_i$ that gives the distance of how far the margin is violated by this training sample in units of $ \| w \|$.
+		\newline
+
+		The new cost function is,
+			\begin{equation} 
+				f_0(\mathbf{w}, b) = \frac{1}{2} \mathbf{w}^T \mathbf{w} + C \sum_i^N \xi_i
+			\end{equation}
+ 
+		The factor $C > 0$ determines how heavy a violation is punished. $C \rightarrow \infty$ recovers hard-margin SVM.
+		
+		\subsubsection{Dual problem with slack variables}
+			\begin{align}
+				&\textrm{maximize } g(\alpha) = \sum_i^N \alpha_i - \frac{1}{2} \sum_i^N \sum_j^N y_i y_j \alpha_i \alpha_j \mathbf{x}_i^T \mathbf{x}_j \\
+				&\textrm{subject to } \sum^N \alpha_i y_i = 0, \textrm{ } 0 \leq \alpha_i \leq C
+			\end{align}
+		
+		\subsubsection{Hinge loss formulation}
+		You can rewrite the objective function as an \textcolor{blue}{unconstrained optimization} problem known as the \textcolor{blue}{hinge loss} formulation.
+			\begin{equation} 
+				\textrm{min}_{\mathbf{w},b} \textrm{ } \frac{1}{2} \mathbf{w}^T \mathbf{w} + C \sum^N \textrm{max } \{0, 1 - y_i (\mathbf{w}^T x_i + b) \}
+			\end{equation}
+			\newline
+
+		Comparison: Hinge Loss $\Leftrightarrow$ Logistic Regression
+
+		\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[
+    			axis lines = center,
+    			xlabel = $y_i(\mathbf{w}^T x_i + b)$,
+			every axis x label/.style={at={(current axis.right of origin)},anchor=west},
+    			ylabel = {Error},
+			legend pos=outer north east,
+			]
+			\addplot [
+    				domain=-2:2,
+				domain y=0:2,
+    				samples=1000, 
+    				color=red,
+			]
+			{max(0, 1 - x)};
+			\addlegendentry{Hinge Loss (soft-margin SVM)}
+			\addplot [
+    				domain=-2:2,
+				domain y=0:2,
+    				samples=1000, 
+    				color=blue,
+    			]
+    			{ln(1 + e^(-x))/ln(2)};
+			\addlegendentry{Log. regression}
+
+			\end{axis}
+		\end{tikzpicture}
+		\end{center}
+
+		\subsection{Kernels}
+		Define a kernel function $k : \mathbb{R}^D \times \mathbb{R}^D \rightarrow \mathbb{R}$ 				\begin{equation} 
+				k ( x_i, x_j) := \mathbf{\phi}(\mathbf{x}_i)^T \mathbf{\phi}(\mathbf{x}_j)
+			\end{equation}
+
+		and rewrite the dual as
+			\begin{equation} 
+				g(\alpha) = \sum_i^N \alpha_i - \frac{1}{2} \sum_i^N \sum_j^N y_i y_j \alpha_i \alpha_j k(\mathbf{x}_i, \mathbf{x}_j)
+			\end{equation}
+			\newline
+
+		This is referred to as the \textcolor{blue}{kernel trick}. You put your data into higher dimensional space, in order to tackle non-linearity and save computational effort as well ($ \mathbf{x}_i^T \mathbf{x}_j \rightarrow \mathcal{O} (n^2)$ and $\mathbf{\phi}(\mathbf{x}_i)^T \mathbf{\phi}(\mathbf{x}_j) \rightarrow \mathcal{O} (n)$).
+
+		\subsubsection{What makes a valid kernel?}
+
+			\begin{enumerate}
+				\item A kernel is \textcolor{blue}{valid} if it corresponds to an \textcolor{blue}{inner product} in some feature space $\varphi : \mathbb{R}^2 \rightarrow \mathcal{H}$.
+				
+				$\rightarrow$ By the positive definiteness property of inner product it must hold that 
+				\begin{equation} 
+					\langle \mathbf{z}, \mathbf{z} \rangle \geq 0 \textrm{ } \textrm{for all } \mathbf{z} \in \mathcal{H}
+				\end{equation}
+					
+				** Example (1)
+				\begin{align} 
+					k (\mathbf{x}, \mathbf{z}) &= (\mathbf{x}^T \mathbf{z})^2 \\
+					&= \Big( \sum^N x_i z_i \Big) \Big( \sum^N x_j z_j \Big) \\
+					&= \sum^N \sum^N ( x_i x_j ) (  z_i z_j ) \\
+					&= \mathbf{\phi}(\mathbf{x})^T \mathbf{\phi}(\mathbf{z})
+				\end{align}
+
+				** Example (2)
+				\begin{align} 
+					k (\mathbf{x}_1, \mathbf{x}_2) &= 1 \\
+					&= \phi (\mathbf{x}_1)^T \phi (\mathbf{x}_2) \textrm{ for } \phi (\mathbf{x}) = 1
+				\end{align}
+
+				** Example (3)
+
+				Given $\mathbf{x} = [x_1 \textrm{ } x_2]^T$:
+				\begin{align} 
+					k (\mathbf{x}, \mathbf{y}) &= (1 +  \mathbf{x}^T \mathbf{y})^2 \\
+					&\rightarrow \phi(x) = [1 \textrm{ } x_1^2 \textrm{ } \sqrt{2}x_1 x_2 \textrm{ } x_2^2 \textrm{ } \sqrt{2}x_1 \textrm{ } \sqrt{2}x_1]^T
+				\end{align}
+
+				\item \textcolor{blue}{Mercer’s theorem}
+				\newline
+
+					A kernel is valid if it gives rise to a \textcolor{blue}{symmetric, positive semidefinite} kernel matrix $\mathbf{K}$ for any input data $\mathbf{X}$.
+	
+				Kernel matrix (also known as \textcolor{blue}{Gram matrix}) $K \in \mathbb{R}^{N \times N}$ is defined as
+				\begin{equation} 
+					K = 
+ 						\begin{pmatrix}
+  						k_{x_1,x_1} & k_{x_1,x_2} & \cdots & k_{x_1,x_n} \\
+  						k_{x_2,x_1} & k_{x_2,x_2} & \cdots & k_{x_2,x_n} \\
+  						\vdots  & \vdots  & \ddots & \vdots  \\
+  						k_{x_n,x_1} & k_{x_n,x_2} & \cdots & k_{x_n,x_n}
+ 						\end{pmatrix}
+				\end{equation}
+
+			\end{enumerate}
+
+		\subsubsection{Kernel preserving operations}
+
+		\begin{itemize}
+				\item Let $k_1 : \mathcal{X} \times \mathcal{X} \rightarrow \mathbb{R}$ and $k_2 : \mathcal{X} \times \mathcal{X} \rightarrow \mathbb{R}$ be kernels, with $\mathcal{X}  \subseteq \mathbb{R}^N$
+				\begin{itemize}
+ 					\item $k(\mathbf{x}_1, \mathbf{x}_2) = k_1(\mathbf{x}_1, \mathbf{x}_2) + k_2(\mathbf{x}_1, \mathbf{x}_2)$
+					\item $k(\mathbf{x}_1, \mathbf{x}_2) = c \cdot k_1(\mathbf{x}_1, \mathbf{x}_2)$, with $c > 0$
+					\item $k(\mathbf{x}_1, \mathbf{x}_2) = k_1(\mathbf{x}_1, \mathbf{x}_2) \cdot k_2(\mathbf{x}_1, \mathbf{x}_2)$
+					\item $k(\mathbf{x}_1, \mathbf{x}_2) = k_3(\mathbf{\phi}(\mathbf{x}_1), \mathbf{\phi}(\mathbf{x}_2))$, with the kernel $k_3$ on $\mathcal{X}' \subseteq \mathbb{R}^M$ and $\mathbf{\phi}: \mathcal{X} \rightarrow \mathcal{X}'$
+					\item $k(\mathbf{x}_1, \mathbf{x}_2) = \mathbf{x}_1 \mathbf{A} \mathbf{x}_2$, with $\mathbf{A} \in \mathbb{R}^N \times \mathbb{R}^N$ symmetric and positve-(semi)definite.
+				\end{itemize}
+			\end{itemize}
+
+
+	\section{Deep Learning}
+	\subsection{Backpropagation}
+	How can we compute the gradient? $\rightarrow$ Automatic differentiation: $\rightarrow$ \textcolor{blue}{Backpropagation}
+
+	\begin{itemize}
+ 		\item Advantage 1: We can reuse computations. The savings are significant.
+		\item Advantage 2: For every node in the graph (every function involved in the
+computations) we only need to implement two methods: Forward \& Backward Pass
+	\end{itemize}
+
+	
+
+	\subsubsection{Algorithm: Backpropagation}
+		\begin{description}
+			\item For each instance $x_n$ in the training set: \\
+
+				Forward pass: compute the values of $z_1^{(n)}$, $z_2^{(n)}$, ... , $z_L^{(n)}$ (and $a_l^{(n)}$) \\
+				Compute the errors recursively as $\delta_L^{(n)}$, $\delta_{(L-1)}^{(n)}$, ... , $\delta_2^{(n)}$ \\
+				Compute $\nabla_W E_n$ using the above equation.
+
+			\item Compute the gradient as $\nabla_W E = \sum_n (\nabla_W E_n)$
+		\end{description} 
+
+	\subsubsection{Backpropagation: Visualization}
+	\begin{center}
+	\begin{tikzpicture}
+		\node (b) at (-3,2.5) {$b_{L-1}^{(n)}$};
+		\node (w) at (-3,1) {$w_{L-1}^{(n)}$};
+		\node (z) at (-3,-0.5) {$z_{L-1}^{(n)}$};
+    		\node (a) at (0,1) {$a_{L}^{(n)}$};
+		\node (zz) at (3,1) {$z_{L}^{(n)}$};
+		\node (e) at (6,1) {$E_{n}$};
+		\node (y) at (3,2.5) {$y^{(n)}$};
+		
+		\path [->] (b) edge (a);
+		\path [->] (w) edge (a);
+		\path [->] (z) edge (a);
+		\path [->] (a) edge (zz);
+		\path [->] (zz) edge (e);
+		\path [->] (y) edge (e);
+	\end{tikzpicture}
+	\end{center}
+	
+	\subsubsection{Backpropagation: Forward Pass}
+		Forward pass is trivial, just evaluate the functions:
+		\begin{align} 
+			a_l^{(n)} &= W^T_{(l-1)} \cdot z_{(l-1)}^{(n)} + b_{(l-1)}^{(n)} \\
+			z_l^{(n)} &= \sigma (a_l^{(n)}) \\
+		\end{align}
+
+	\subsubsection{Backpropagation: Backward Pass}
+
+	What we want to know or compute in order to gain the gradient for the \textcolor{blue}{weights}: \textcolor{blue}{$\frac{\partial E_n}{\partial w_{(l-1)}}$} $\rightarrow$ using the \textcolor{blue}{Chainrule} results in:
+		\begin{equation} 
+			\frac{\partial E_n}{\partial w_{(l-1)}} = \frac{\partial a_l^{(n)}}{\partial w_{(l-1)}} \cdot \frac{\partial z_l^{(n)}}{\partial a_l^{(n)}} \cdot \frac{\partial E_n}{\partial z_l^{(n)}}
+		\end{equation}
+		
+		\begin{align} 
+			\frac{\partial a_l^{(n)}}{\partial w_{(l-1)}} &= z_{(l-1)}^{(n)} \\
+			\frac{\partial z_l^{(n)}}{\partial a_l^{(n)}} &= \sigma^{\prime} (a_l^{(n)}) \\
+			\frac{\partial E_n}{\partial z_l^{(n)}} &= a_l^{(n)} - y^{(n)}
+		\end{align}
+		\newline
+
+	What we want to know or compute in order to gain the gradient for the \textcolor{blue}{bias}: {$\frac{\partial E_n}{\partial b_{(l-1)}}$} $\rightarrow$ using the \textcolor{blue}{Chainrule} results in:
+		\begin{equation} 
+			\frac{\partial E_n}{\partial b_{(l-1)}} = \frac{\partial a_l^{(n)}}{\partial b_{(l-1)}} \cdot \frac{\partial z_l^{(n)}}{\partial a_l^{(n)}} \cdot \frac{\partial E_n}{\partial z_l^{(n)}}
+		\end{equation}
+		
+		\begin{align} 
+			\frac{\partial a_l^{(n)}}{\partial b_{(l-1)}} &= \mathbf{1} \\
+			\frac{\partial z_l^{(n)}}{\partial a_l^{(n)}} &= \sigma^{\prime} (a_l^{(n)}) \\
+			\frac{\partial E_n}{\partial z_l^{(n)}} &= a_l^{(n)} - y^{(n)}
+		\end{align}
+
+
+
+	\section{Dimensionality Reduction}
+		\subsection{Principal Component Analysis (PCA)}
+		Goal: 
+		\begin{itemize}[noitemsep,nolistsep]
+			\item Transform the data, such that the covariance between the new dimensions is $0$
+			\item The transformed data points are not linearly correlated any more
+		\end{itemize}
+
+		\subsubsection{General approach}
+		\begin{enumerate}
+			\item \textcolor{blue}{Center the data}
+			\begin{itemize}[noitemsep,nolistsep]
+				\item Given: $\mathbf{X} \in \mathbb{R}^{N \times d}$ : $\mathbf{X} = \begin{pmatrix}
+  						x_{11} & \cdots & x_{1d} \\
+  						\vdots & \ddots & \vdots  \\
+  						x_{N1} & \cdots & x_{Nd}
+ 						\end{pmatrix}$
+					
+				\item Shift the points by their mean $\mathbf{\bar{x}} \in \mathbb{R}^{d}$ (centralized data): $\mathbf{\tilde{x}}_i = \mathbf{x}_i - \mathbf{\bar{x}}$. 
+				\begin{equation} 
+					\mathbf{\bar{x}} = \begin{pmatrix}
+  						\bar{x}_{1} \\
+  						\vdots \\
+  						\bar{x}_{d} 
+ 						\end{pmatrix} = \frac{1}{N} \cdot \mathbf{X}^T \cdot \mathbf{1}_N
+				\end{equation}
+			\end{itemize}
+
+			\item Compute the \textcolor{blue}{Covariance Matrix}
+			\begin{itemize}[noitemsep,nolistsep]
+				\item For the set of points contained in X the corresponding covariance matrix is defined as:
+				\begin{equation} 
+					\mathbf{\Sigma}_{\mathbf{X}} = \begin{pmatrix}
+  						\textrm{Var}(\mathbf{X}_1) & \textrm{Cov}(\mathbf{X}_1, \mathbf{X}_2) & \cdots & \textrm{Cov}(\mathbf{X}_1, \mathbf{X}_d) \\
+  						\textrm{Cov}(\mathbf{X}_2, \mathbf{X}_1) & \textrm{Var}(\mathbf{X}_2) & \cdots & \vdots \\
+  						\vdots  & \vdots  & \ddots & \vdots  \\
+  						\textrm{Cov}(\mathbf{X}_d, \mathbf{X}_1) & \cdots & \cdots & \textrm{Var}(\mathbf{X}_d)
+ 						\end{pmatrix} = \frac{1}{N} \mathbf{X}^T \mathbf{X} - \mathbf{\bar{x}} \mathbf{\bar{x}}^T
+				\end{equation}
+			\end{itemize}
+
+			\item Use the \textcolor{blue}{Eigenvector decomposition} to transform the coordinate system
+			\begin{itemize}
+				\item Eigendecomposition of the covariance matrix: $ \mathbf{\Sigma}_{\mathbf{\tilde{X}}} = \Gamma \cdot \Lambda \cdot \Gamma^T$ with .. 
+				\begin{equation} 
+					\Lambda = \begin{pmatrix}
+  						\lambda_1 & & 0\\
+  						& \ddots & \\
+  						0 & & \lambda_d
+ 						\end{pmatrix}
+				\end{equation}
+				\item $\rightarrow$ matrices $\Lambda, \Gamma \in \mathbb{R}^{d \times d}$ with columns of $\Gamma$ being the normalized eigenvectors $\gamma_i$
+				\item $\rightarrow \Gamma$ is an \textcolor{blue}{orthonormal} matrix: $\Gamma \cdot \Gamma^T = \Gamma^T \cdot \Gamma = \textrm{Id } (\Gamma^T = \Gamma^{-1})$ $\rightarrow$ \textcolor{blue}{Scalar product} must be 0 between all rows in the matrix $\Gamma$ ($\vec{a} \cdot \vec{b} = a_1 b_1 + a_2 + b_2 + ... + a_d b_d \stackrel{!}{=} 0$)
+				\item $\rightarrow \Lambda$ is a diagonal matrix with eigenvalues $\lambda_i$ as the diagonal elements
+			\end{itemize}
+
+			\item The new coordinate system is defined by the eigenvectors $\gamma_i$:
+			\begin{itemize}
+				\item \textcolor{blue}{Transformed data}: $\mathbf{Y} = \mathbf{\tilde{X}} ⋅ \Gamma$
+				\item $\Lambda$ is the covariance matrix in this new coordinate system
+				\item $\rightarrow$ New system has variance $\lambda_i$ in dimension $i$
+			\end{itemize}
+
+			\item Approach
+			\begin{itemize}
+				\item The coordinates with low variance (hence low $\lambda_i$) can be ignored
+				\item $\lambda_1 \geq \lambda_2 \geq ... \geq \lambda_d$
+				\item Truncation of $\Gamma$: Keep only columns (i.e. eigenvectors) of $\Gamma$ corresponding to the largest k eigenvalues $\lambda_1, ... , \lambda_k$
+				\item $\mathbf{Y}_{\textrm{reduced}} = \mathbf{\tilde{X}} ⋅ \Gamma_{\textrm{truncated}}$
+			\end{itemize}
+		\end{enumerate}
+
+
+		\subsection{Probabilistic PCA}
+		\begin{itemize}
+			\item PPCA is a simple latent variable generative model
+			\begin{itemize}
+				\item $x_i \in \mathbb{R}^d$ : observed data
+				\item $z_i \in \mathbb{R}^k$ : latent variable
+				\item $k \ll d$: latent space usually of much lower dimension
+			\end{itemize}
+		\end{itemize}
+
+		Modeling this and using Marginalization yields in:
+		\begin{equation} 
+			p(\mathbf{x}) = \int \mathcal{N}(\mathbf{x} | \mathbf{W}\mathbf{z} + \mu, \sigma^2 \mathbf{I}) \cdot \mathcal{N} (\mathbf{z} | 0, \mathbf{I} ) \textrm{d}\mathbf{z} = \mathcal{N} (\mathbf{x} |\mu,  \mathbf{W}\mathbf{W}^T + \sigma^2 \mathbf{I})
+		\end{equation}
+
+		$\rightarrow$ Find parameters $\mathbf{W}$, $\mu$, $\sigma$ via \textcolor{blue}{MLE}. MLE estimates for $\mathbf{W}$ and $\sigma^2$ can be solved by either Closed form, EM algorithm or Gradient Ascent.
+		\newline
+
+		Computing the mean $\mu$ and variance of the resulting Gaussian yields the same result as before:
+		\begin{equation} 
+			\mathbb{E}[\mathbf{x}] = \mathbb{E}[\mathbf{W}\mathbf{z} + \mu + \varepsilon] = \mathbf{W}\mathbb{E}[\mathbf{z}] + \mathbb{E}[\mu] + \mathbb{E}[\varepsilon] = \mu
+		\end{equation}
+
+		because of the linearity of the Expectation and the definitions given above.
+		\newline
+
+		For the \textcolor{blue}{Covariance} you obtain: 
+		\begin{align} 
+			\textrm{Cov}[\mathbf{x}] &= \mathbb{E}[(\mathbf{x} - \mathbb{E}[\mathbf{x}])(\mathbf{x} - \mathbb{E}[\mathbf{x}])^T] = \mathbb{E}[(\mathbf{W}\mathbf{z} + \varepsilon)(\mathbf{W}\mathbf{z} + \varepsilon)^T] \\
+			&= \mathbb{E}[\mathbf{W}\mathbf{z}\mathbf{z}^T \mathbf{W}^T + \varepsilon \varepsilon^T] = \mathbf{W} \mathbb{E}[\mathbf{z}\mathbf{z}^T] \mathbf{W}^T + \mathbb{E}[\varepsilon \varepsilon^T] \\
+			&= \mathbf{W}\mathbf{I}\mathbf{W}^T + \sigma^2 \mathbf{I} = \mathbf{W} \mathbf{W}^T + \sigma^2 \mathbf{I}
+		\end{align}
+
+		Interpretation: 
+			\begin{itemize}
+				\item If the matrix $\mathbf{W}$ is a $D \times M$ matrix this means that we get a low-rank approximation of a full Covariance $\Sigma$. The main idea of pPCA is to “force the explanation” of the connection between the components $x_i$ into the latent $\mathbf{z}$ and the matrix $\mathbf{W}$ by using a diagonal covariance in the Gaussian $p(\mathbf{x}|\mathbf{z}) = \mathcal{N} (\mathbf{x} | \mathbf{W}\mathbf{z} + \mu, \sigma^2 \mathbf{I})$, instead of learning a general covariance as e.g. in $p(\mathbf{x}) = \mathcal{N} (\mathbf{x}|\mu, \Sigma)$ to explain the correlations between the $x_i$.
+			\end{itemize}
+
+		\textcolor{red}{Conclusion}:
+
+		Performing dimensionality reduction boils down to finding the distribution of the latent variables $z_i$ (given the observed data $x_i$ and learned parameters). Using Bayes’ rule one obtains
+		\begin{equation}
+			p(z_i | x_i) \sim \mathcal{N} (\mathbf{M}^{-1} \mathbf{W}^T (\mathbf{x_i} - \mu ), \sigma^2 \mathbf{M}^{-1})
+		\end{equation}
+		where $\mathbf{M} = \mathbf{W}^T \mathbf{W} + \sigma^2 \mathbf{I}$
+		
+		\subsection{Singular Value Decomposition (SVD)}
+
+		\subsubsection{SVD: Definition}
+
+		Each real matrix $\mathbf{A} \in \mathbb{R}^{N \times d}$ can be decomposed into 
+		\begin{equation}
+			\mathbf{A} = \mathbf{U} \cdot \mathbf{\Sigma} \cdot \mathbf{V}^T 
+		\end{equation}
+
+		(note: exact representation, no approximation), where
+
+		\begin{itemize}
+			\item $\mathbf{U} \in \mathbb{R}^{n \times r}$, $\mathbf{\Sigma} \in \mathbb{R}^{r \times r}$, $\mathbf{V} \in \mathbb{R}^{d \times r}$
+			\item $\mathbf{U}, \mathbf{V}$: column \textcolor{blue}{orthonormal} $\rightarrow$ $\mathbf{U}^T \mathbf{U} = \mathbf{I}$; $\mathbf{V}^T \mathbf{V} = \mathbf{I}$
+			\item $\mathbf{\Sigma}$: diagonal 
+			\begin{itemize}[noitemsep]
+			\item $r \times r$ diagonal matrix (\textcolor{red}{r}: \textcolor{blue}{rank} of matrix $\mathbf{A}$)
+			\item entries (called \textcolor{blue}{singular values}) are positive, and sorted in decreasing order: $\sigma_1 \geq \sigma_2 \geq \cdots \geq 0$
+			\end{itemize}
+		\end{itemize}
+
+		\subsubsection{SVD: Dimensionality Reduction}
+		\textbf{Goal}: Find the best \textcolor{blue}{low rank approximation}
+		\begin{itemize}
+			\item best = minimize the sum of reconstruction error
+			\item Given matrix $\mathbf{A} \in \mathbb{R}^{N \times d}$, find $\mathbf{B} \in \mathbb{R}^{N \times d}$ with $\textrm{rank}(\mathbf{B}) = k$ that minimizes
+			\begin{equation}
+				\|\mathbf{A} - \mathbf{B}\|_F^2 = \sum^N \sum^D (a_{ij} - b_{ij})^2
+			\end{equation}
+		\end{itemize}
+
+		\subsection{Matrix Factorization}
+
+		\subsubsection{Latent Factor Models}
+		\textcolor{blue}{Goal}: Find $\mathbf{Q} \in \mathbb{R}^{n \times k}$ and $\mathbf{P} \in \mathbb{R}^{d \times k}$ such that:
+		\begin{equation}
+			\textrm{min }_{P,Q} \sum (r_{xi} - q_x \cdot p_i^T)^2
+		\end{equation}
+
+		\begin{itemize}[noitemsep]
+			\item Summation only over existing entries R
+			\item Columns of $P, Q$ do not to be orthogonal or unit length
+		\end{itemize}
+
+
+		Approach: \textcolor{blue}{Alternating Optimization} (a.k.a. block coordinate minimization)
+		\begin{itemize}[noitemsep]
+			\item Pick initial values for $P$ and $Q$
+			\item Alternatingly keep one variable fix and optimize for the other; repeat until convergence
+		\end{itemize}
+	
+
+		\subsection{Autoencoder}
+			Autoencoder is defined as $f_{enc}(x) = z$ (encoder: projects the data to a lower dimension) and $f_{dec}(z) \approx x$ (decoder: reconstructs the data from the latent code)
+			\begin{equation} 
+				f_{enc}(f_{enc}(x)) = X W_1 W_2
+			\end{equation}
+			with $W_1 \in \mathbb{R}^{D \times K} $ and $W_2 \in \mathbb{R}^{K \times D} $
+
+	\section{Clustering}
+		\subsection{Kmeans}
+
+		The K-means objective (also called distortion measure) is defined as:
+		\begin{equation} 
+			J(\mathbf{X}, \mathbf{Z}, \mathbf{\mu}) = \sum^N \sum^K \mathbf{z}_{ik} \| \mathbf{x}_i - \mu_k \|_2^2
+		\end{equation}
+
+		\textcolor{blue}{Goal}:
+
+		\begin{itemize}[noitemsep]
+			\item Finding the best centroids $\mu$ and cluster assignments $\mathbf{Z}$
+			\begin{equation} 
+				\mathbf{Z}^* , \mu^* = \textrm{argmin }_{\mathbf{Z}, \mu} J(\mathbf{X}, \mathbf{Z}, \mathbf{\mu}) 
+			\end{equation}
+			
+			\item Idea: \textcolor{blue}{alternating optimization} - update $\mathbf{Z}$ and $\mu$ in turns! $\rightarrow$ \textcolor{blue}{Lloyd’s algorithm}
+
+			\begin{enumerate}[noitemsep]
+				\item Initialize the centroids $\mu = {\mu_1, ... , \mu_k}$
+				\item Update cluster indicators (solve $\textrm{min}_{\mathbf{Z}} J(\mathbf{X}, \mathbf{Z}, \mathbf{\mu})$)
+				\begin{equation} 
+					\mathbf{z}_{ik} = \begin{cases}
+    						1  & \quad \text{if } k = \text{argmin}_j \text{ } \|\mathbf{x}_i - \mu_j \|^2 \\
+    						0  & \quad \text{else}
+ 						\end{cases}
+				\end{equation}
+				\item Update centroids (solve $\textrm{min}_{\mu} \textrm{ } J(\mathbf{X}, \mathbf{Z}, \mathbf{\mu})$)
+				\begin{equation} 
+					\mu_k = \frac{1}{N_k} \sum^N \mathbf{z}_{ik} \mathbf{x}_{i}, \textrm{ where } N_k = \sum^N \mathbf{z}_{ik}
+				\end{equation}
+				\item If objective $J(\mathbf{X}, \mathbf{Z}, \mathbf{\mu}$ has not converged, return to step 2.
+			\end{enumerate}
+
+		\end{itemize}
+	
+		\subsection{Gaussian Mixture Models}
+
+		The \textcolor{blue}{expectation maximization (EM)} algorithm iterates the following two steps until convergence:
+
+		\begin{enumerate}
+			\item Evaluate the posterior distribution $\gamma_t (\mathbf{Z})$ with respect to the current estimate of the parameters $ \{\pi^{(t)}, \mu^{(t)}, \Sigma^{(t)} \} $
+			\item Obtain the next iteration of the parameters by solving
+			\begin{equation} 
+				\pi^{(t+1)}, \mu^{(t+1)}, \Sigma^{(t+1)} = \textrm{argmax}_{\pi, \mu, \Sigma}  \textrm{} \mathbb{E}_{\mathbf{Z} \sim \gamma_t \textrm{} (\mathbf{Z})} [\textrm{log }p(\mathbf{X},\mathbf{Z} | \pi, \mu, \Sigma)]
+			\end{equation}
+			** further information
+			\begin{align} 
+				\mathcal{L} &= \mathbb{E}_{\mathbf{Z} \sim \gamma_t \textrm{} (\mathbf{Z})} [\textrm{log }p(\mathbf{X},\mathbf{Z} | \pi, \mu, \Sigma)] \\
+				\mathcal{L} &= \sum^N \sum^K \gamma_t (z_i = k) \textrm{log } p(\mathbf{x}_i,\mathbf{z}_i = k | \pi, \mu, \Sigma) \\
+				\mathcal{L} &= \sum^N \sum^K \gamma_t (z_i = k) \textrm{log } p(\mathbf{x}_i | \mathbf{z}_i = k, \mu, \Sigma) p(\mathbf{z}_i = k | \pi) \\
+				&= \underbrace{\sum^N \sum^K \gamma_t (z_i = k) \textrm{log } p(\mathbf{x}_i | \mathbf{z}_i = k, \mu, \Sigma)}_{\mathcal{L}_x} + \underbrace{\sum^N \sum^K \gamma_t (z_i = k) \textrm{log } p(\mathbf{z}_i = k | \pi)}_{\mathcal{L}_z}
+			\end{align}
+
+			where $\mathcal{L}_z$ only depends on $\pi$ and $\mathcal{L}_x$ only depends on $\mu$ and $\Sigma$.
+			\newline
+
+			\begin{enumerate}
+				\item To find the M-step rules for \textcolor{blue}{ $\pi$  }, you have to solve a convex optimization problem:
+				\begin{align}
+					&\textrm{maximize } \mathcal{L}_z \\
+					&\textrm{subject to } \sum^K \pi_k - 1 = 0
+				\end{align}
+				\item To find the M-step rules for \textcolor{blue}{ $\mu$ }and \textcolor{blue}{ $\Sigma$ }, you need to examine \textcolor{blue}{ $\mathcal{L}_x$ }.
+			\end{enumerate}
+		\end{enumerate}
+			
+		
+	\section{Advanced}
+	\subsection{Differential Privacy}
+	How can we compute (statistical) queries and train ML models without leaking (too much) (sensitive) information about any individual?
+	\begin{itemize}
+ 		\item Idea: introduce randomization to provide \textcolor{blue}{plausible deniability}
+	\end{itemize}
+	
+	\begin{center}
+	\begin{tikzpicture}
+		\node[shape=circle,draw=black](f) at (0,0) {flip};
+		\node (t) at (-2,-1.5) {T};
+		\node (y) at (-3,-3) {Yes};
+		\node (n) at (-1,-3) {No};
+		\node[shape=circle,draw=black] (h) at (2,-1.5) {flip};
+		\node (yy) at (1,-3) {Yes};
+		\node (nn) at (3,-3) {No};
+
+		\path [->] (f) edge node[left] {T} (t);
+		\path [->] (f) edge node[right] {H} (h);
+		\path [->] (t) edge (y);
+		\path [->] (t) edge (n);
+		\path [->] (h) edge node[left] {T} (yy);
+		\path [->] (h) edge node[right] {H} (nn);
+	\end{tikzpicture}
+	\end{center}
+
+	We can accurately estimate the population mean $\mu$ from the randomized responses by $\mu = \frac{1}{4} (1 − \hat{\mu}) + \frac{3}{4} \cdot \hat{\mu}$, where $\hat{\mu}$ is the MLE.
+	\begin{itemize}
+ 		\item $P ( \textrm{response } = \textrm{Yes} | \textrm{truth } = \textrm{Yes}) =  \frac{3}{4}$
+		\item $P ( \textrm{response } = \textrm{Yes} | \textrm{truth } = \textrm{No}) =  \frac{1}{4}$
+	\end{itemize}
+
+
+	\subsection{Algorithmic Fairness}
+
+	\subsection{Adversarial Robustness}
+
+\end{document}

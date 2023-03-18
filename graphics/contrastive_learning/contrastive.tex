@@ -1,0 +1,69 @@
+\documentclass[border=0.2cm]{standalone}
+
+%\renewcommand{\raggedsection}{\centering}
+\usepackage{sectsty}
+\usepackage{lipsum}
+\usepackage{cases}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows}
+\usetikzlibrary{decorations.pathreplacing}
+
+\begin{document}
+	\begin{tikzpicture}
+		% SimCLR 
+		\node(repr) at (0,-1) {\textbf{SimCLR}};
+		\node[circle,draw](x) at (0,0) {$x$};
+		\node[circle,draw](xi) at (-3,1) {$\tilde{x}_i$};
+		\node[circle,draw](xj) at (3,1) {$\tilde{x}_j$};
+		\node(hi) at (-3,3) {$h_i$};
+		\node(hj) at (3,3) {$h_j$};
+		\node(zi) at (-3,4.5) {$z_i$};
+		\node(zj) at (3,4.5) {$z_j$};
+		\node(repr) at (0,3) {\footnotesize Represenation};
+		\node(loss) at (0,4.5) {\footnotesize Minimizing $\mathcal{L}_{i,j}$};
+		
+		%Paths
+		\path [->, -latex, line width=0.25pt] (x) edge node [sloped, anchor=center, below] {$t \sim \tau$} (xi);
+		\path [->, -latex, line width=0.25pt] (x) edge node [sloped, anchor=center, below] {$t^{\prime} \sim \tau$} (xj);
+		\path[->, -latex, line width=0.25pt] (xi) edge node [anchor=center, left] {$f(\cdot)$}(hi);
+		\path[->, -latex, line width=0.25pt] (xj) edge node [anchor=center, right] {$f(\cdot)$}(hj);
+		\path[->, -latex, line width=0.25pt] (hi) edge node [anchor=center, left] {$g(\cdot)$}(zi);
+		\path[->, -latex, line width=0.25pt] (hj) edge node [anchor=center, right] {$g(\cdot)$}(zj);
+		
+		\path[->, -latex, line width=0.25pt] (repr) edge (hi);
+		\path[->, -latex, line width=0.25pt] (repr) edge (hj);
+		\path[->, -latex, line width=0.25pt] (loss) edge (zi);
+		\path[->, -latex, line width=0.25pt] (loss) edge (zj);
+
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+		%SimSiam
+		\node(srepr) at (9,-1) {\textbf{SimSiam}};
+		\node[circle,draw](sx) at (9,0) {$x$};
+		\node[circle,draw](sxi) at (6,1) {$\tilde{x}_i$};
+		\node[circle,draw](sxj) at (12,1) {$\tilde{x}_j$};
+		\node(shi) at (6,3) {$h_i$};
+		\node(shj) at (12,3) {$h_j$};
+		\node(szi) at (6,4.5) {$z_i$};
+		\node(spi) at (6,6) {$p_i$};
+		\node(szj) at (12,6) {$z_j$};
+		\node(sloss) at (9,6) {\footnotesize Minimizing $\mathcal{L}_{i,j}$};
+		
+		\path [->, -latex, line width=0.25pt] (sx) edge node [sloped, anchor=center, below] {$t \sim \tau$} (sxi);
+		\path [->, -latex, line width=0.25pt] (sx) edge node [sloped, anchor=center, below] {$t^{\prime} \sim \tau$} (sxj);
+		\path[->, -latex, line width=0.25pt] (sxi) edge node [anchor=center, left] {$f(\cdot)$}(shi);
+		\path[->, -latex, line width=0.25pt] (shi) edge node [anchor=center, left] {$g(\cdot)$}(szi);
+		\path[->, -latex, line width=0.25pt] (sxj) edge node [anchor=center, left] {$f(\cdot)$}(shj);		
+		\path[->, -latex, line width=0.25pt] (shj) edge node [anchor=center, left] {$g(\cdot)$}(szj);		
+		\path[->, -latex, line width=0.25pt] (szi) edge node [anchor=center, left] {$h(\cdot)$}(spi);		
+		\path[->, -latex, line width=0.25pt] (sloss) edge (spi);
+		\path[->, -latex, line width=0.25pt] (sloss) edge (szj);
+		
+		\draw [dashed, ->, -latex, line width=0.25pt] (12.5,5.5) -- coordinate (ext) (12.5,3.75);
+ 		\draw[shift={(ext)}](-0.1,-0.1)--(0.1,+0.1);
+		\draw[shift={(ext)}](-0.1,0.1)--(0.1,-0.1);
+		\node(grad) at (13.5,4.5) {stop-grad};
+	\end{tikzpicture}
+\end{document}
