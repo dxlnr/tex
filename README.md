@@ -6,6 +6,8 @@ Latex Graphics Container
 
 ```bash
 sudo apt install texlive-latex-extra -y
+# additional font packages
+sudo apt-get install texlive-fonts-extra
 ```
 
 ## Compile

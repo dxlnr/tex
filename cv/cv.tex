@@ -1,0 +1,202 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Stylish Curriculum Vitae
+% LaTeX Template
+% Version 1.1 (September 10, 2021)
+%
+% This template originates from:
+% https://www.LaTeXTemplates.com
+%
+% Authors:
+% Stefano (https://www.kindoblue.nl)
+% Vel (vel@LaTeXTemplates.com)
+%
+% License:
+% CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[a4paper, oneside, final]{scrartcl} % Paper options using the scrartcl class
+
+\usepackage{scrlayer-scrpage} % Provides headers and footers configuration
+\usepackage{titlesec} % Allows creating custom \section's
+\usepackage{marvosym} % Allows the use of symbols
+\usepackage{tabularx,colortbl} % Advanced table configurations
+\usepackage{ebgaramond} % Use the EB Garamond font
+\usepackage{microtype} % To enable letterspacing
+\usepackage{fontawesome}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[
+colorlinks=true,
+urlcolor=MidnightBlue,
+linkcolor=green
+]{hyperref}
+
+\titleformat{\section}{\large\scshape\raggedright}{}{0em}{}[\titlerule] % Section formatting
+
+\pagestyle{scrheadings} % Print the headers and footers on all pages
+
+\addtolength{\voffset}{-0.5in} % Adjust the vertical offset - less whitespace at the top of the page
+\addtolength{\textheight}{3cm} % Adjust the text height - less whitespace at the bottom of the page
+
+\newcommand{\gray}{\rowcolor[gray]{.97}} % Custom highlighting for the work experience and education sections
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\begin{center} % Center everything in the document
+
+%----------------------------------------------------------------------------------------
+%	HEADER SECTION
+%----------------------------------------------------------------------------------------
+
+{\fontsize{36}{36}\selectfont\scshape\textls[200]{Daniel Illner}} % Your name at the top
+
+\vspace{1.0cm} % Extra whitespace after the large name at the top
+
+\textls[150]{(ADDRESS) {\LARGE\textperiodcentered} (CITY) {\LARGE\textperiodcentered} (COUNTRY) (CODE)}\\ % Your mailing address
+\textls[150]{daniel.illner@outlook.de \ {\LARGE\textperiodcentered} \ (PHONE)} \\ 
+\vspace{0.2cm}
+\href{http://www.illner.io}{\Large\faLink} \ {\LARGE\textperiodcentered} \ \href{http://www.github.com/dxlnr}{\Large\faGithub} \ {\LARGE\textperiodcentered} \ \href{https://www.linkedin.com/in/daniel-illner}{\large\faLinkedin}
+
+%----------------------------------------------------------------------------------------
+%	OBJECTIVE
+%----------------------------------------------------------------------------------------
+
+\section{Objective}
+
+20 PFLOPs currently Berlin based with a focus on Computing. Interests circulate around Artificial Intelligence, Cognition and Philosophy.
+
+%----------------------------------------------------------------------------------------
+%	EDUCATION
+%----------------------------------------------------------------------------------------
+
+\section{Education}
+
+\begin{tabularx}{0.97\linewidth}{>{\raggedleft\scshape}p{2cm}X}
+\gray Period & \textbf{04/2018 --- 12/2021}\\
+\gray Degree & \textbf{M.Sc. in Robotics, Cognition, Intelligence}\\
+\gray University & \textbf{Technical University Munich} \hfill Munich, Germany\\
+       & Comprehensive curriculum in engineering with a focus on Computer Science, \\
+       & Machine Learning, Data Science and Software Engineering. 
+\end{tabularx}
+
+\vspace{5pt}
+
+\begin{tabularx}{0.97\linewidth}{>{\raggedleft\scshape}p{2cm}X}
+\gray Period & \textbf{03/2021 --- 12/2021}\\
+\gray Degree & \textbf{Master Thesis for M.Sc.}\\
+\gray University & \textbf{Harvard University} \hfill Boston, USA\\
+       & Thesis: Mitochondria Analysis via Machine Learning in the field of Connectomics \\
+       & Deep Learning and Data Science at Lichtman Lab under the guidance of Dr. Snow Wang in the fields of Connectomics that aims to reconstruct a wiring diagram of the brain. Machine Learning is used to detect and cluster mitochondria based on EM data.
+\end{tabularx}
+
+\vspace{5pt}
+
+\begin{tabularx}{0.97\linewidth}{>{\raggedleft\scshape}p{2cm}X}
+\gray Period & \textbf{09/2019 --- 03/2020}\\
+\gray Degree & \textbf{Exchange Semester}\\
+\gray University & \textbf{Hebrew University 0f Jerusalem} \hfill Jerusalem, Israel\\
+       &
+Part of the Hebrew University’s international program as well as the computer science department.
+\end{tabularx}
+
+%----------------------------------------------------------------------------------------
+%	SKILLS
+%----------------------------------------------------------------------------------------
+
+\section{Skills}
+
+\begin{tabular}{ @{} >{\bfseries}l @{\hspace{6ex}} l }
+Languages & German: native speaker, English: C1 level \\
+Programming Languages & Python, C/C++, Typescript, Rust, Verilog  \\
+\end{tabular}
+
+%----------------------------------------------------------------------------------------
+%	WORK EXPERIENCE
+%----------------------------------------------------------------------------------------
+
+\section{Work Experience}
+
+\begin{tabularx}{0.97\linewidth}{>{\raggedleft\scshape}p{2cm}X}
+\gray Period & \textbf{01/2023 --- 10/2023}\\
+\gray Employer & \textbf{Tupu Farming Solutions} \hfill Berlin, Germany\\
+    \gray Job Title & \textbf{AI Robotics Engineer}\\
+           & Developed robotics production software and integrated vision system via Deep Learning from scratch using Python and C++.\\
+\end{tabularx}
+
+\vspace{5pt}
+
+\begin{tabularx}{0.97\linewidth}{>{\raggedleft\scshape}p{2cm}X}
+\gray Period & \textbf{01/2022 --- 08/2022}\\
+\gray Employer & \textbf{Modalic} \hfill Munich, Germany\\
+    \gray Job Title & \textbf{Initiator \& Tech Lead}\\
+       & Main developer of the Modalic FL Ops Framework for enabling Federated Learning as part of an early startup endevour at UnternehmerTUM.\\
+\end{tabularx}
+
+\vspace{5pt}
+
+\begin{tabularx}{0.97\linewidth}{>{\raggedleft\scshape}p{2cm}X}
+\gray Period & \textbf{03/2022 --- 12/2022}\\
+\gray Employer & \textbf{Capgemini Engineering} \hfill Munich, Germany\\
+\gray Job Title & \textbf{Software Engineer}\\
+       & Main developer and maintainer of an object detection software with knowledge integration.\\
+       & Languages \& Frameworks: Python, C++, Tensorflow, Cuda, ROS
+\end{tabularx}
+
+\vspace{5pt}
+
+\begin{tabularx}{0.97\linewidth}{>{\raggedleft\scshape}p{2cm}X}
+\gray Period & \textbf{02/2022 --- 04/2022}\\
+\gray Employer & \textbf{Digital Product School} \hfill Munich, Germany\\
+\gray Job Title & \textbf{AI Software Engineer}\\
+       & Initiated a Federated Learning project as a stackholder within the DPS of UnternehmerTUM. \\
+       & Tech lead of the team and main responsibility for developing the software in Python, Rust \& Typescript.
+\end{tabularx}
+
+\vspace{5pt}
+
+\begin{tabularx}{0.97\linewidth}{>{\raggedleft\scshape}p{2cm}X}
+\gray Period & \textbf{03/2020 --- 10/2020}\\
+\gray Employer & \textbf{Technical University Munich} \hfill Munich, Germany\\
+\gray Job Title & \textbf{Working Student as Software Engineer}\\
+       & Working student at Chair of Building Realization and Robotics for the realization of a computer vision system within the HEPHAESTUS project. \\
+       & Implementing hardware and a pose estimation software with C++ for a cable robot that should automatically pick up a fasade object for assembling purposes.
+\end{tabularx}
+
+%----------------------------------------------------------------------------------------
+%	EXTRACURRICULAR
+%----------------------------------------------------------------------------------------
+
+\section{Extracurricular \& Scholarship}
+
+\begin{tabularx}{0.97\linewidth}{>{\raggedleft\scshape}p{2cm}X}
+    \gray Period & \textbf{08/2023 --- present}\\
+\gray Employer & \textbf{AERTH} \hfill Berlin, Germany\\
+\gray Title & \textbf{Aerth AI}\\
+       & Part of Aerth: OPEN PLANETARY AI.
+\end{tabularx}
+
+\vspace{5pt}
+
+\begin{tabularx}{0.97\linewidth}{>{\raggedleft\scshape}p{2cm}X}
+    \gray Period & \textbf{08/2020 --- 08/2022}\\
+\gray Employer & \textbf{ThinkTech} \hfill Munich, Germany\\
+\gray Title & \textbf{Associated member}\\
+       & ThinkTech is an independent nonprofit association of critical thinkers and makers, researchers and entrepreneurs, coders, philosophers, lawyers, artists and everyone else who wants to join the discussion. Part of the topic group Data Economy.
+\end{tabularx}
+
+\vspace{5pt}
+
+\begin{tabularx}{0.97\linewidth}{>{\raggedleft\scshape}p{2cm}X}
+\gray Period & \textbf{06/2021 --- 12/2021}\\
+\gray Provider & \textbf{DAAD} \hfill Munich, Germany\\
+\gray Type & \textbf{IFI Stipendium}\\
+       & DAAD is supporting me on working on a master thesis in an international institute.
+\end{tabularx}
+
+%----------------------------------------------------------------------------------------
+
+\end{center}
+
+\end{document}
